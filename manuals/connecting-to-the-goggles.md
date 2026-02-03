@@ -2,7 +2,7 @@
 
 ## USB Connection and Permissions
 
-1. Connect your phone to the DJI goggles using a **USB-C cable**.
+1. Connect your phone to the goggles using a **USB-C cable**.
 2. When Android shows the USB permission prompt, tap **Allow** to let SquirrelCast access the goggles.
 
 <p float="left">
@@ -10,7 +10,7 @@
   <img src="images/permission.png" alt="Android USB permission prompt, tap Allow" width="22%" />
 </p>
 
-If you accidentally deny the permission, SquirrelCast cannot connect. Tap the in-app button to show the permission prompt again.
+If you accidentally deny the permission, SquirrelCast cannot connect. Tap the tred button to show the permission prompt again.
 
 <img src="images/permission-denied.png" alt="Permission denied screen, tap the button to request permission again" width="22%" />
 
@@ -25,7 +25,7 @@ The streaming tab will show the status of the connection:
 - When the goggles are receiving video, there is also a notification showing the status.
 
 <p float="left">
-  <img src="images/permission.png" alt="Connected to goggles" width="22%" />
+  <img src="images/connected.png" alt="Connected to goggles" width="22%" />
   <img src="images/connected-video.png" alt="Connected to goggles and receiving video" width="22%" />
   <img src="images/foreground-notification.png" alt="Foreground notification when receiving video" width="50%" />
 </p>
