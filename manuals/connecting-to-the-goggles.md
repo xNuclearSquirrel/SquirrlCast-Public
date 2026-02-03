@@ -25,7 +25,7 @@ The streaming tab will show the status of the connection:
 - When the goggles are receiving video, there is also a notification showing the status.
 
 <p float="left">
-  <img src="images/connection.png" alt="Connected to goggles" width="22%" />
+  <img src="images/permission.png" alt="Connected to goggles" width="22%" />
   <img src="images/connected-video.png" alt="Connected to goggles and receiving video" width="22%" />
   <img src="images/notification.png" alt="Foreground notification when receiving video" width="50%" />
 </p>
