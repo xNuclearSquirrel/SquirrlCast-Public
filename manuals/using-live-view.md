@@ -77,10 +77,6 @@ This is mostly interesting for DJI drones (for example Avata), which can send lo
 
 ### Record phone audio
 
-Requires microphone permission.
+Records your phone’s microphone audio during a Live View recording and stores it either as an audio track in the video, or as a separate audio file in Music/SquirrelCast. This feature is great for adding commentary during a flight but also generally makes footage more interesting.
 
-Records your phone’s microphone audio during a Live View recording and stores it either:
-- as an audio track in the video, or
-- as a separate audio file
-
-This is great for adding commentary during a flight and generally makes footage more interesting.
+> Note:Requires microphone permission.
