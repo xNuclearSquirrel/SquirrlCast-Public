@@ -12,7 +12,7 @@ SquirrelCast is an Android smartphone-based video-out solution for newer DJI gog
 - Stream live video over your local network to other devices:
   - Share to a web browser via **WebRTC**, no additional software needed
   - Share via **RTSP** to third-party apps such as **VLC**, and ground stations such as **ArduPilot Mission Planner**
-- (DJI Goggles 3 and DJI Goggles N3 only) Configure the goggles’ Wi-Fi and use **SquirrelReceiver** to stream directly from the goggles to a Windows PC over Wi-Fi, no app in between
+- (DJI Goggles 3) Configure the goggles’ Wi-Fi and use **SquirrelReceiver** to stream directly from the goggles to a Windows PC over Wi-Fi, no app in between
 
 ## Get the App
 
