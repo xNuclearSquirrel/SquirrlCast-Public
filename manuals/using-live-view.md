@@ -24,12 +24,29 @@ Recording continues even if you:
 You can also start or stop recording from the Android foreground notification. It shows the current recording state and the recording duration.
 
 <p float="left">
-  <img src="images/notification-start-rec.png" alt="Foreground notification, start recording" width="50%" />
-</p>
-<p float="left">
+  <img src="images/notification-start-rec.png" alt="Foreground notification, start recording" width="50%" /><br />
   <img src="images/notification-rec-running.png" alt="Foreground notification, recording running with duration" width="50%" />
 </p>
 
 ## Changing camera settings
+
+Tap the **Settings** icon in the bottom right. This opens a menu where you can set the recording parameters of the air unit directly.
+
+These include:
+- ISO
+- Shutter Speed
+- Exposure Bias
+- White Balance
+- Resolution
+- Aspect Ratio
+- Framerate
+
+Changing these will directly affect the camera settings of the drone or air unit.
+
+<p float="left">
+  <img src="images/settings.png" alt="Settings icon in the Player tab" width="22%" />
+  <img src="images/settings-half.png" alt="Settings menu partially expanded" width="22%" />
+  <img src="images/settings-full.png" alt="Settings menu fully expanded" width="22%" />
+</p>
 
 ## Additional options
