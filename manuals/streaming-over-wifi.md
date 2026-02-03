@@ -86,7 +86,7 @@ If you want a clean video feed (without MSP OSD), turn off overlays in the goggl
 SquirrelReceiver can be downloaded from its GitHub releases page:  
 https://github.com/xNuclearSquirrel/SquirrelReceiver
 
-> **Note:** Currently only works with DJI Goggles 3 (it might also work with DJI Goggles N3, but this has not been tested yet).
+> **Note:** Currently only works with DJI Goggles 3.
 
 ### Install and unlock SquirrelReceiver
 
