@@ -68,10 +68,50 @@ Depending on the app used to receive the RTSP stream, a specific launch command 
 
 ### Clean video feed (no MSP OSD)
 
-If you want a clean video feed (without MSP OSD), turn off overlays in the goggles:
+If you want a clean video feed (without MSP OSD), turn off overlays in the goggles:  
 **Settings** → **Camera** → **Additional Camera Settings** → **Camera View Recording** → **Off**.
 
 <p float="left">
   <img src="images/camera-view-recording.png" alt="Goggles setting: Camera View Recording" width="35%" />
   <img src="images/clean-gstreamer-video.png" alt="Clean video feed in Mission Planner" width="60%" />
+</p>
+
+## Stream directly from the goggles to Windows using SquirrelReceiver
+
+**SquirrelReceiver** is an additional Windows tool that receives video directly from the goggles using the built-in wireless sharing feature, without SquirrelCast running. It is **not** an alternative RTSP receiver at the moment.
+
+SquirrelReceiver can be downloaded from its GitHub releases page:  
+https://github.com/xNuclearSquirrel/SquirrelReceiver
+
+### Install and unlock SquirrelReceiver
+
+1. Install SquirrelReceiver on Windows and open **Settings**.
+2. In SquirrelCast, open the **Utilities** tab.
+3. Select the **Unlock** button and scan the QR code shown in SquirrelReceiver to generate a license key and unlock SquirrelReceiver.
+
+<img src="images/unlock.png" alt="Unlock SquirrelReceiver by scanning the QR code in SquirrelCast" width="22%" />
+
+### Configure goggles Wi-Fi
+
+1. Connect SquirrelCast to the goggles.
+2. In SquirrelCast, open the **Utilities** tab and configure the goggles Wi-Fi network (or leave the default network, but note down the password).
+
+<img src="images/wifi-settings.png" alt="Configure goggles Wi-Fi settings from the Utilities tab" width="22%" />
+
+### Enable Live View sharing
+
+On the goggles, enable Live View sharing (pull down on the 5-position stick and enable Live View sharing).
+
+<p align="center">
+  <img src="images/liveview-sharing.png" alt="Enable Live View sharing on the goggles" width="60%" />
+</p>
+
+### Connect Windows to the goggles Wi-Fi
+
+1. On the Windows PC, connect to the goggles Wi-Fi network.
+2. The stream should start automatically in SquirrelReceiver.
+
+<p float="left">
+  <img src="images/wifi-connect.png" alt="Connect Windows to the goggles Wi-Fi network" width="20%" />
+  <img src="images/squirrelreceiver.png" alt="SquirrelReceiver receiving the live stream" width="60%" />
 </p>
