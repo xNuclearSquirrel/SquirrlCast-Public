@@ -12,7 +12,7 @@
 
 ## Recording video and audio
 
-To start or stop recording, press the **Record** button in the top right. It will create a video recording and save it in Movies/SquirrelCast. To add an audio track see [Additional options](manuals/using-live-view.md#Record-phone-audio).
+To start or stop recording, press the **Record** button in the top right. It will create a video recording and save it in Movies/SquirrelCast. To add an audio track see [Additional options](manuals/using-live-view.md#additional-options)
 
 <img src="images/liveview-record.png" alt="Record button in the Player tab" width="22%" />
 
