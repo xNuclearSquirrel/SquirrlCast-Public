@@ -12,24 +12,20 @@
 
 If you accidentally deny the permission, SquirrelCast cannot connect. Tap the in-app button to show the permission prompt again.
 
-<img src="images/permission-denied.png" alt="Permission denied screen, tap the button to request permission again" width="420" />
+<img src="images/permission-denied.png" alt="Permission denied screen, tap the button to request permission again" width="22%" />
 
-## Important: Close DJI Fly
-
-**DJI Fly must be closed** while using SquirrelCast. The goggles can only connect to one app at a time.
-
-If DJI Fly is set to open automatically:
-1. Unplug the goggles.
-2. Open **DJI Fly** and fully close it (remove it from recent apps).
-3. Plug the goggles back in and return to SquirrelCast.
+> **Note:** **DJI Fly must be closed** while using SquirrelCast. The goggles can only connect to one app at a time.  
+> If DJI Fly opens automatically, switch to **DJI Fly**, fully close it (remove it from recent apps), then return to **SquirrelCast** and grant the permission again.
 
 ## Connection Status
 
-These screens show the difference between:
-- A successful connection to the goggles
-- A connection where the goggles are actively receiving video from an aircraft/drone
+The streaming tab will show the status of the connection:
+- Shows a successful connection to the goggles.
+- Whether the goggles are actively receiving video from an aircraft/drone.
+- When the goggles are receiving video, there is also a notification showing the status.
 
 <p float="left">
-  <img src="images/connected.png" alt="Connected to goggles" width="49%" />
-  <img src="images/connected-video.png" alt="Connected to goggles and receiving video" width="49%" />
+  <img src="images/connected.png" alt="Connected to goggles" width="22%" />
+  <img src="images/connected-video.png" alt="Connected to goggles and receiving video" width="22%" />
+  <img src="images/notification.png" alt="Foreground notification when receiving video" width="50%" />
 </p>
