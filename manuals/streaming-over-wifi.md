@@ -45,7 +45,7 @@ Depending on the app used to receive the RTSP stream, a specific launch command 
 
 <p float="left">
   <img src="images/RTSP-url.png" alt="RTSP URL shown in the app" width="22%" />
-  <img src="images/launch-commands.png" alt="Launch commands presets for RTSP apps" width="22%" />
+  <img src="images/launch-command.png" alt="Launch commands presets for RTSP apps" width="22%" />
 </p>
 
 ### Set up ArduPilot Mission Planner
