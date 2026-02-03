@@ -12,7 +12,7 @@
 
 ## Recording video and audio
 
-To start or stop recording, press the **Record** button in the top right.
+To start or stop recording, press the **Record** button in the top right. It will create a video recording and save it in Movies/SquirrelCast. To add an audio track see [Additional options](manuals/using-live-view.md#Record-phone-audio).
 
 <img src="images/liveview-record.png" alt="Record button in the Player tab" width="22%" />
 
@@ -65,14 +65,11 @@ When enabled, SquirrelCast will automatically start recording in the app wheneve
 
 This is useful if your goggles are set to auto record on arm, because SquirrelCast will also start recording on arm, as long as the air unit actually starts recording.
 
-Notes:
-- This only works if the drone or air unit is actually recording.
-- If the air unit does not start recording (for example because the SD card is full), SquirrelCast will not start recording either.
-- SquirrelCast will also stop recording automatically when the air unit stops recording, keep that in mind.
+> Note: SquirrelCast will also stop recording automatically when the air unit stops recording, keep that in mind.
 
 ### Telemetry logging
 
-Creates a CSV file with telemetry parameters received from the goggles. You can set the logging interval in the settings.
+Creates a CSV file (in Documents/SquirrelCast) with telemetry parameters received from the goggles. You can set the logging interval in the settings.
 
 This is mostly interesting for DJI drones (for example Avata), which can send lots of data like GPS position, speed, altitude, and battery stats. It is usually less interesting for air units, which mostly send camera parameters.
 
