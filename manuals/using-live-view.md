@@ -1,7 +1,5 @@
 # Using Live View
 
-## Opening Live View
-
 1. Open the navigation menu (button at the top left).
 2. Select the **Player** tab to bring up the live video screen.
 
