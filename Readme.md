@@ -22,6 +22,7 @@
 
 
 ## Manuals
+- [Connecting to the Goggles](manuals/connecting-to-the-goggles.md)
 
 - [Using Live View](manuals/using-live-view.md)
   - [Recording video and audio](manuals/using-live-view.md#recording-video-and-audio)
