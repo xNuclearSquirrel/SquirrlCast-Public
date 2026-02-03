@@ -18,14 +18,10 @@
 
 - **Google Play:** https://play.google.com/store/apps/details?id=com.NuclearSquirrel.SquirrelCast
 
-### QR Code
+<img src="app-QR.png" alt="SquirrelCast QR Code" width="200">
 
-![SquirrelCast QR Code](app-QR.png)
 
 ## Manuals
-
-> Manuals live in the `manuals/` folder.  
-> The main bullet links to the manual file, and indented bullets link to sections within that same file.
 
 - [Using Live View](manuals/using-live-view.md)
   - [Recording video and audio](manuals/using-live-view.md#recording-video-and-audio)
