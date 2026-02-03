@@ -6,8 +6,8 @@
 2. When Android shows the USB permission prompt, tap **Allow** to let SquirrelCast access the goggles.
 
 <p float="left">
-  <img src="images/connection.png" alt="Connect phone to goggles via USB-C" width="78%" />
-  <img src="images/permission.png" alt="Android USB permission prompt, tap Allow" width="20%" />
+  <img src="images/connection.png" alt="Connect phone to goggles via USB-C" width="70%" />
+  <img src="images/permission.png" alt="Android USB permission prompt, tap Allow" width="25%" />
 </p>
 
 If you accidentally deny the permission, SquirrelCast cannot connect. Tap the in-app button to show the permission prompt again.
