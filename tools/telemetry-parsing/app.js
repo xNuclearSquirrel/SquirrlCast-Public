@@ -12,7 +12,6 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 let polyline = null;
 let hoverMarker = null;
-let hoverTooltip = null;
 let points = [];
 
 const columnKeys = {
@@ -33,7 +32,9 @@ const columnKeys = {
   timestamp: "timestamp",
 };
 
-const toDegrees = (radians) => (Number.isFinite(radians) ? (radians * 180) / Math.PI : null);
+const toDegrees = (radians) =>
+  Number.isFinite(radians) ? (radians * 180) / Math.PI : null;
+
 const parseBoolean = (value) => {
   if (value === true || value === 1) return true;
   if (typeof value === "string") {
@@ -67,7 +68,9 @@ const haversineMeters = (lat1, lon1, lat2, lon2) => {
   const dLon = toRad(lon2 - lon1);
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) ** 2;
   return 2 * r * Math.asin(Math.sqrt(a));
 };
 
@@ -77,7 +80,9 @@ const bearingDegrees = (lat1, lon1, lat2, lon2) => {
   const y = Math.sin(toRad(lon2 - lon1)) * Math.cos(toRad(lat2));
   const x =
     Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
-    Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(toRad(lon2 - lon1));
+    Math.sin(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.cos(toRad(lon2 - lon1));
   return (toDeg(Math.atan2(y, x)) + 360) % 360;
 };
 
@@ -96,17 +101,10 @@ const resetState = () => {
     map.removeLayer(hoverMarker);
     hoverMarker = null;
   }
-  if (hoverTooltip) {
-    map.removeLayer(hoverTooltip);
-    hoverTooltip = null;
-  }
 };
 
 const updateSummary = (meta) => {
-  const details = [
-    `Points: ${meta.points}`,
-    `Time span: ${meta.start} → ${meta.end}`,
-  ];
+  const details = [`Points: ${meta.points}`, `Time span: ${meta.start} → ${meta.end}`];
   statsEl.textContent = details.join("\n");
 };
 
@@ -114,9 +112,7 @@ const createKml = (trackPoints) => {
   const hasAltitude = trackPoints.some((point) => Number.isFinite(point.alt));
   const coordinates = trackPoints
     .map((point) => {
-      if (!hasAltitude) {
-        return `${point.lon},${point.lat}`;
-      }
+      if (!hasAltitude) return `${point.lon},${point.lat}`;
       return `${point.lon},${point.lat},${Number.isFinite(point.alt) ? point.alt : 0}`;
     })
     .join(" ");
@@ -157,22 +153,24 @@ const downloadKml = () => {
   URL.revokeObjectURL(url);
 };
 
-const findNearestPoint = (latlng) => {
+// Use containerPoint directly for distance comparisons (more stable during zoom/pan)
+const findNearestPoint = (containerPoint) => {
   if (!points.length) return null;
-  const target = map.latLngToLayerPoint(latlng);
+
   let closest = null;
   let minDist = Infinity;
 
-  points.forEach((point) => {
+  for (const point of points) {
     const layerPoint = map.latLngToLayerPoint([point.lat, point.lon]);
-    const distance = layerPoint.distanceTo(target);
+    const distance = layerPoint.distanceTo(containerPoint);
     if (distance < minDist) {
       minDist = distance;
       closest = point;
     }
-  });
+  }
 
-  if (minDist > 48) return null;
+  const SNAP_PX = 60; // a little more forgiving than 48
+  if (minDist > SNAP_PX) return null;
   return closest;
 };
 
@@ -208,6 +206,15 @@ const renderTrack = () => {
       fillOpacity: 0.9,
       weight: 1,
     }).addTo(map);
+
+    // Bind tooltip to the marker so Leaflet handles stacking + positioning
+    hoverMarker.bindTooltip("", {
+      direction: "top",
+      offset: [0, -8],
+      opacity: 0.95,
+      className: "map-tooltip",
+      sticky: false,
+    });
   }
 };
 
@@ -224,9 +231,7 @@ const parseTelemetry = (rows) => {
         : toDegrees(row[columnKeys.lonRad]);
       if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
 
-      const alt = Number.isFinite(row[columnKeys.alt])
-        ? row[columnKeys.alt]
-        : row[columnKeys.altHome];
+      const alt = Number.isFinite(row[columnKeys.alt]) ? row[columnKeys.alt] : row[columnKeys.altHome];
 
       const homepointSet = parseBoolean(row[columnKeys.homepointSet]);
       const homeLat = Number.isFinite(row[columnKeys.homeLatDeg])
@@ -296,39 +301,25 @@ fileInput.addEventListener("change", (event) => {
 });
 
 map.on("mousemove", (event) => {
-  if (!points.length || !polyline) return;
-  const nearest = findNearestPoint(event.latlng);
+  if (!points.length || !polyline || !hoverMarker) return;
 
+  // Always follow the mouse
+  hoverMarker.setLatLng(event.latlng);
+
+  // Snap + show tooltip only when close enough to a data point
+  const nearest = findNearestPoint(event.containerPoint);
   if (!nearest) {
-    if (hoverTooltip) {
-      map.removeLayer(hoverTooltip);
-      hoverTooltip = null;
-    }
+    hoverMarker.closeTooltip();
     return;
   }
 
-  if (!hoverTooltip) {
-    hoverTooltip = L.tooltip({
-      direction: "top",
-      offset: [0, -8],
-      opacity: 0.95,
-      className: "map-tooltip",
-      sticky: true,
-    }).addTo(map);
-  }
-
-  hoverTooltip.setLatLng([nearest.lat, nearest.lon]).setContent(formatTooltip(nearest));
-
-  if (hoverMarker) {
-    hoverMarker.setLatLng([nearest.lat, nearest.lon]);
-  }
+  hoverMarker.setLatLng([nearest.lat, nearest.lon]);
+  hoverMarker.setTooltipContent(formatTooltip(nearest));
+  hoverMarker.openTooltip();
 });
 
 map.on("mouseout", () => {
-  if (hoverTooltip) {
-    map.removeLayer(hoverTooltip);
-    hoverTooltip = null;
-  }
+  if (hoverMarker) hoverMarker.closeTooltip();
 });
 
 exportButton.addEventListener("click", downloadKml);

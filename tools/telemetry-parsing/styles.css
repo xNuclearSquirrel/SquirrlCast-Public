@@ -124,6 +124,11 @@ button[disabled] {
   min-height: 0;
 }
 
+/* Keep the tooltip pane above tiles/overlays */
+.leaflet-tooltip-pane {
+  z-index: 10000;
+}
+
 .map-tooltip.leaflet-tooltip {
   background: rgba(11, 13, 18, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.12);
