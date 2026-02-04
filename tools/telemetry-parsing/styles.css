@@ -111,6 +111,85 @@ button[disabled] {
   white-space: pre-line;
 }
 
+.flight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flight-list-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.flight-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.flight-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.flight-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.flight-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.flight-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  padding-left: 28px;
+}
+
+.flight-color {
+  border: 1px solid var(--border);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  padding: 6px 28px 6px 10px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) calc(50% - 3px),
+    calc(100% - 9px) calc(50% - 3px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.flight-color:focus {
+  outline: 2px solid rgba(90, 209, 255, 0.45);
+  outline-offset: 1px;
+}
+
+.flight-color option {
+  background: #0e1014;
+  color: var(--text);
+}
+
 .map-wrapper {
   position: relative;
   border-radius: 16px;
@@ -130,7 +209,7 @@ button[disabled] {
 }
 
 .map-tooltip.leaflet-tooltip {
-  background: rgba(11, 13, 18, 0.92);
+  background: rgba(11, 13, 18, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text);
   font-size: 0.85rem;
@@ -142,13 +221,236 @@ button[disabled] {
 }
 
 .map-tooltip.leaflet-tooltip::before {
-  border-top-color: rgba(11, 13, 18, 0.92);
+  border-top-color: rgba(11, 13, 18, 0.82);
 }
 
 .map-tooltip.leaflet-tooltip strong {
   display: block;
   font-size: 0.9rem;
   margin-bottom: 4px;
+}
+
+.profile-overlay {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 24px;
+  height: 210px;
+  background: rgba(11, 13, 18, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(6px);
+  transition: height 0.2s ease;
+  z-index: 600;
+}
+
+.profile-overlay.is-collapsed {
+  height: 48px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.profile-overlay.is-collapsed .profile-body {
+  display: none;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.profile-title {
+  font-weight: 600;
+}
+
+.profile-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.profile-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.profile-mode {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-mode.is-active {
+  background: rgba(90, 209, 255, 0.35);
+  color: #001018;
+}
+
+.profile-collapse {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile-collapse svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+}
+
+.profile-collapse.is-collapsed svg {
+  transform: rotate(180deg);
+}
+
+.profile-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.profile-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 12px;
+  z-index: 3;
+}
+
+.profile-axis {
+  position: absolute;
+  font-size: 0.72rem;
+  color: var(--muted);
+  display: flex;
+  pointer-events: none;
+  z-index: 2;
+  gap: 4px;
+}
+
+.profile-axis-y {
+  top: 6px;
+  bottom: 12px;
+  left: 8px;
+  width: 44px;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: right;
+}
+
+.profile-axis-x {
+  left: 56px;
+  right: 12px;
+  bottom: 14px;
+  justify-content: space-between;
+}
+
+.profile-axis span {
+  min-width: 32px;
+}
+
+.profile-axis-label {
+  position: absolute;
+  font-size: 0.72rem;
+  color: var(--muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.profile-axis-label-y {
+  left: 4px;
+  top: 50%;
+  transform-origin: left center;
+  transform: translateY(50%) rotate(-90deg);
+}
+
+.profile-axis-label-x {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(25%);
+}
+
+.profile-tooltip {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  transform: translateX(-50%);
+  background: rgba(11, 13, 18, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: 4;
+  white-space: nowrap;
+}
+
+#profileChart {
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+}
+
+#profileAxisX,
+#profileAxisY {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+
+.profile-path {
+  fill: none;
+  stroke-width: 2.25;
+}
+
+#profileCursor {
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 1;
+  opacity: 0;
+}
+
+#profileDot {
+  fill: #ffffff;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0;
 }
 
 @media (max-width: 900px) {

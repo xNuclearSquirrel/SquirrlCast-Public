@@ -16,10 +16,6 @@
     <header>
       <div>
         <h1>SquirrelCast Telemetry Parser</h1>
-        <p>
-          Upload a telemetry CSV to visualize the flight path, hover for stats, and
-          export KML for maps.
-        </p>
       </div>
     </header>
 
@@ -37,10 +33,58 @@
 
         <div class="status" id="status">No file loaded.</div>
         <div class="stats" id="stats"></div>
+        <div class="flight-list" id="flightList"></div>
       </section>
 
       <section class="map-wrapper">
         <div id="map"></div>
+        <div class="profile-overlay" id="profileOverlay">
+          <div class="profile-header">
+            <div class="profile-title">Height profile</div>
+            <div class="profile-controls">
+              <div class="profile-toggle" role="group" aria-label="Height profile mode">
+                <button class="profile-mode is-active" data-mode="distance" type="button">
+                  Height vs distance
+                </button>
+                <button class="profile-mode" data-mode="time" type="button">
+                  Height vs time
+                </button>
+              </div>
+              <button
+                class="profile-collapse"
+                id="profileCollapse"
+                type="button"
+                aria-expanded="true"
+                aria-label="Collapse height profile"
+              >
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M12 4L4 12M4 8v4h4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="profile-body">
+            <div class="profile-empty" id="profileEmpty">Load telemetry to see the height profile.</div>
+            <div class="profile-axis profile-axis-y" id="profileAxisYTicks"></div>
+            <div class="profile-axis profile-axis-x" id="profileAxisXTicks"></div>
+            <div class="profile-axis-label profile-axis-label-y" id="profileAxisLabelY">
+              Altitude (m)
+            </div>
+            <div class="profile-axis-label profile-axis-label-x" id="profileAxisLabelX">
+              Distance (km)
+            </div>
+            <div class="profile-tooltip" id="profileTooltip"></div>
+            <svg id="profileChart" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <line id="profileAxisX"></line>
+              <line id="profileAxisY"></line>
+              <g id="profileTicksX"></g>
+              <g id="profileTicksY"></g>
+              <g id="profilePaths"></g>
+              <line id="profileCursor"></line>
+              <circle id="profileDot" r="3"></circle>
+            </svg>
+          </div>
+        </div>
       </section>
     </main>
 
