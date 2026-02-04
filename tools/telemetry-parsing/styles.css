@@ -124,22 +124,23 @@ button[disabled] {
   min-height: 0;
 }
 
-.tooltip {
-  position: absolute;
-  pointer-events: none;
-  background: rgba(11, 13, 18, 0.9);
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.map-tooltip.leaflet-tooltip {
+  background: rgba(11, 13, 18, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text);
   font-size: 0.85rem;
   line-height: 1.4;
   max-width: 240px;
-  z-index: 10;
+  padding: 10px 12px;
+  border-radius: 10px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
-.tooltip strong {
+.map-tooltip.leaflet-tooltip::before {
+  border-top-color: rgba(11, 13, 18, 0.92);
+}
+
+.map-tooltip.leaflet-tooltip strong {
   display: block;
   font-size: 0.9rem;
   margin-bottom: 4px;

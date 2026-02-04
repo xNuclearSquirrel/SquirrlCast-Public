@@ -3,7 +3,6 @@ const exportButton = document.getElementById("exportKml");
 const resetButton = document.getElementById("reset");
 const statusEl = document.getElementById("status");
 const statsEl = document.getElementById("stats");
-const tooltip = document.getElementById("tooltip");
 
 const map = L.map("map", { zoomControl: true }).setView([0, 0], 2);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -13,6 +12,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 let polyline = null;
 let hoverMarker = null;
+let hoverTooltip = null;
 let points = [];
 
 const columnKeys = {
@@ -87,7 +87,6 @@ const resetState = () => {
   statsEl.textContent = "";
   exportButton.disabled = true;
   resetButton.disabled = true;
-  tooltip.hidden = true;
 
   if (polyline) {
     map.removeLayer(polyline);
@@ -96,6 +95,10 @@ const resetState = () => {
   if (hoverMarker) {
     map.removeLayer(hoverMarker);
     hoverMarker = null;
+  }
+  if (hoverTooltip) {
+    map.removeLayer(hoverTooltip);
+    hoverTooltip = null;
   }
 };
 
@@ -108,9 +111,17 @@ const updateSummary = (meta) => {
 };
 
 const createKml = (trackPoints) => {
+  const hasAltitude = trackPoints.some((point) => Number.isFinite(point.alt));
   const coordinates = trackPoints
-    .map((point) => `${point.lon},${point.lat},${point.alt ?? 0}`)
+    .map((point) => {
+      if (!hasAltitude) {
+        return `${point.lon},${point.lat}`;
+      }
+      return `${point.lon},${point.lat},${Number.isFinite(point.alt) ? point.alt : 0}`;
+    })
     .join(" ");
+
+  const altitudeMode = hasAltitude ? "relativeToGround" : "clampToGround";
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
@@ -126,7 +137,7 @@ const createKml = (trackPoints) => {
       </Style>
       <LineString>
         <tessellate>1</tessellate>
-        <altitudeMode>absolute</altitudeMode>
+        <altitudeMode>${altitudeMode}</altitudeMode>
         <coordinates>${coordinates}</coordinates>
       </LineString>
     </Placemark>
@@ -289,22 +300,24 @@ map.on("mousemove", (event) => {
   const nearest = findNearestPoint(event.latlng);
 
   if (!nearest) {
-    tooltip.hidden = true;
+    if (hoverTooltip) {
+      map.removeLayer(hoverTooltip);
+      hoverTooltip = null;
+    }
     return;
   }
 
-  tooltip.hidden = false;
-  tooltip.innerHTML = formatTooltip(nearest);
-  const padding = 12;
-  const container = map.getContainer().getBoundingClientRect();
-  const tooltipWidth = tooltip.offsetWidth;
-  const tooltipHeight = tooltip.offsetHeight;
-  const maxX = Math.max(padding, container.width - tooltipWidth - padding);
-  const maxY = Math.max(padding, container.height - tooltipHeight - padding);
-  const x = Math.min(Math.max(event.containerPoint.x + padding, padding), maxX);
-  const y = Math.min(Math.max(event.containerPoint.y + padding, padding), maxY);
-  tooltip.style.left = `${x}px`;
-  tooltip.style.top = `${y}px`;
+  if (!hoverTooltip) {
+    hoverTooltip = L.tooltip({
+      direction: "top",
+      offset: [0, -8],
+      opacity: 0.95,
+      className: "map-tooltip",
+      sticky: true,
+    }).addTo(map);
+  }
+
+  hoverTooltip.setLatLng([nearest.lat, nearest.lon]).setContent(formatTooltip(nearest));
 
   if (hoverMarker) {
     hoverMarker.setLatLng([nearest.lat, nearest.lon]);
@@ -312,7 +325,10 @@ map.on("mousemove", (event) => {
 });
 
 map.on("mouseout", () => {
-  tooltip.hidden = true;
+  if (hoverTooltip) {
+    map.removeLayer(hoverTooltip);
+    hoverTooltip = null;
+  }
 });
 
 exportButton.addEventListener("click", downloadKml);
