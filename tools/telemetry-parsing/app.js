@@ -28,8 +28,6 @@ const columnKeys = {
   homeLonDeg: "flight.home.lon_deg",
   homeLatRad: "flight.home.lat_rad",
   homeLonRad: "flight.home.lon_rad",
-  homeSet: "flight.home.homepoint_set",
-  gpsUsed: "flight.osd.gps_used",
   timestamp: "timestamp",
 };
 
@@ -164,7 +162,7 @@ const formatTooltip = (point) => {
   lines.push(`Battery: ${formatSoc(point.batterySoc)}`);
   lines.push(`Voltage: ${formatVoltage(point.batteryMv)}`);
 
-  if (point.homeSet && point.homeLat != null && point.homeLon != null) {
+  if (point.homeLat != null && point.homeLon != null) {
     const distance = haversineMeters(point.lat, point.lon, point.homeLat, point.homeLon);
     const bearing = bearingDegrees(point.lat, point.lon, point.homeLat, point.homeLon);
     lines.push(`Home: ${distance.toFixed(1)} m @ ${bearing.toFixed(0)}°`);
@@ -195,8 +193,6 @@ const renderTrack = () => {
 const parseTelemetry = (rows) => {
   const parsed = rows
     .map((row) => {
-      if (!row[columnKeys.gpsUsed]) return null;
-
       const lat = Number.isFinite(row[columnKeys.latDeg])
         ? row[columnKeys.latDeg]
         : toDegrees(row[columnKeys.latRad]);
@@ -224,7 +220,6 @@ const parseTelemetry = (rows) => {
         batteryMv: row[columnKeys.batteryMv],
         homeLat: Number.isFinite(homeLat) ? homeLat : null,
         homeLon: Number.isFinite(homeLon) ? homeLon : null,
-        homeSet: Boolean(row[columnKeys.homeSet]),
         timestamp: row[columnKeys.timestamp],
         timestampValue: row[columnKeys.timestamp] ? Date.parse(row[columnKeys.timestamp]) : null,
       };
@@ -286,21 +281,8 @@ map.on("mousemove", (event) => {
 
   tooltip.hidden = false;
   tooltip.innerHTML = formatTooltip(nearest);
-  const container = map.getContainer();
-  const bounds = container.getBoundingClientRect();
-  const tooltipWidth = tooltip.offsetWidth || 220;
-  const tooltipHeight = tooltip.offsetHeight || 120;
-  const padding = 16;
-  const x = Math.min(
-    Math.max(event.containerPoint.x + 12, padding),
-    bounds.width - tooltipWidth - padding,
-  );
-  const y = Math.min(
-    Math.max(event.containerPoint.y + 12, padding),
-    bounds.height - tooltipHeight - padding,
-  );
-  tooltip.style.left = `${x}px`;
-  tooltip.style.top = `${y}px`;
+  tooltip.style.left = `${event.containerPoint.x}px`;
+  tooltip.style.top = `${event.containerPoint.y}px`;
 
   if (hoverMarker) {
     hoverMarker.setLatLng([nearest.lat, nearest.lon]);
