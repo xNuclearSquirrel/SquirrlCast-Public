@@ -38,11 +38,15 @@ let activePoints = [];
 let flightSegments = [];
 let profileSegments = [];
 let profileData = [];
+let profileDataByTime = [];
+let profileDataByDistance = [];
 let profileMode = "distance";
 let profileScales = null;
 let profileIsHovering = false;
 let activePoint = null;
 let datasetStartTime = null;
+let loadedFileCount = 0;
+let profileTimeRange = null;
 
 const PROFILE_PADDING = { top: 12, right: 12, bottom: 28, left: 56 };
 
@@ -56,6 +60,11 @@ const FLIGHT_COLORS = [
   { label: "Teal", value: "#4dd0e1" },
   { label: "Red", value: "#ff5c5c" },
 ];
+
+const toKmlTime = (timestamp) => {
+  if (!Number.isFinite(timestamp)) return null;
+  return new Date(timestamp).toISOString();
+};
 
 const columnKeys = {
   latDeg: "flight.osd.lat_deg",
@@ -278,7 +287,7 @@ const computeSegmentStats = (segment) => {
   segment.endTime = lastTime;
 };
 
-const buildFlightSegments = (trackPoints) => {
+const buildFlightSegments = (trackPoints, offset = 0) => {
   const segments = [];
   let current = null;
 
@@ -286,10 +295,11 @@ const buildFlightSegments = (trackPoints) => {
     if (point.motorOn) {
       if (!current) {
         current = {
-          id: segments.length + 1,
+          id: offset + segments.length + 1,
+          name: `Flight ${offset + segments.length + 1}`,
           points: [],
           enabled: true,
-          color: FLIGHT_COLORS[segments.length % FLIGHT_COLORS.length].value,
+          color: FLIGHT_COLORS[(offset + segments.length) % FLIGHT_COLORS.length].value,
         };
       }
       current.points.push(point);
@@ -380,7 +390,8 @@ const renderFlightList = () => {
     dot.style.borderColor = segment.color;
 
     const name = document.createElement("span");
-    name.textContent = `Flight ${index + 1}`;
+    name.className = "flight-name";
+    name.textContent = segment.name || `Flight ${index + 1}`;
 
     label.append(checkbox, dot, name);
 
@@ -406,6 +417,46 @@ const renderFlightList = () => {
       segment.enabled = checkbox.checked;
       updateActiveView();
     });
+
+    const startEditing = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (label.querySelector(".flight-name-input")) return;
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "flight-name-input";
+      input.value = segment.name || `Flight ${index + 1}`;
+      label.replaceChild(input, name);
+      input.focus();
+      input.select();
+
+      const finish = (commit) => {
+        if (commit) {
+          const value = input.value.trim();
+          segment.name = value || `Flight ${index + 1}`;
+        }
+        const newSpan = document.createElement("span");
+        newSpan.className = "flight-name";
+        newSpan.textContent = segment.name || `Flight ${index + 1}`;
+        label.replaceChild(newSpan, input);
+        newSpan.addEventListener("click", startEditing);
+      };
+
+      input.addEventListener("blur", () => finish(true));
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          input.blur();
+        }
+        if (e.key === "Escape") {
+          e.preventDefault();
+          finish(false);
+        }
+      });
+    };
+
+    name.addEventListener("click", startEditing);
 
     colorSelect.addEventListener("change", () => {
       segment.color = colorSelect.value;
@@ -473,28 +524,67 @@ const updateSummary = () => {
     return;
   }
 
-  const firstPoint = visibleSegments[0].points[0];
-  const dateLabel = formatDate(firstPoint?.timestampValue);
+  const startTimes = visibleSegments
+    .map((segment) => segment.startTime)
+    .filter(Number.isFinite);
+  const earliestStart = startTimes.length ? Math.min(...startTimes) : null;
+  const dateLabel = formatDate(earliestStart);
   const totalDuration = visibleSegments.reduce((sum, segment) => sum + (segment.duration || 0), 0);
-  const totalDistance = visibleSegments.reduce((sum, segment) => sum + (segment.distance || 0), 0);
 
-  const details = [`Date: ${dateLabel}`, `Duration: ${formatDuration(totalDuration)}`, `Distance: ${formatDistance(totalDistance)}`];
+  const details = [`Date: ${dateLabel}`, `Duration: ${formatDuration(totalDuration)}`];
   statsEl.textContent = details.join("\n");
 };
 
 const updateActiveView = (shouldFit = false) => {
   renderSegments(shouldFit);
   const visibleSegments = getActiveSegments();
+  const startTimes = visibleSegments
+    .map((segment) => segment.startTime)
+    .filter(Number.isFinite);
+  const anchorTime = startTimes.length ? Math.min(...startTimes) : datasetStartTime;
+  const endTimes = visibleSegments
+    .map((segment) => segment.endTime)
+    .filter(Number.isFinite);
+  const latestEnd = endTimes.length ? Math.max(...endTimes) : null;
+  profileTimeRange =
+    Number.isFinite(anchorTime) && Number.isFinite(latestEnd)
+      ? Math.max((latestEnd - anchorTime) / 1000, 0)
+      : null;
+
   const { profileSegments: segmentsForProfile, profilePoints } = buildProfileDataFromSegments(
     visibleSegments,
-    datasetStartTime
+    anchorTime
   );
   profileSegments = segmentsForProfile;
   profileData = profilePoints;
+  profileDataByDistance = [...profileData].filter((point) => Number.isFinite(point.distFromStart));
+  profileDataByTime = [...profileData].filter((point) => Number.isFinite(point.timeFromStart));
+  profileDataByTime.sort((a, b) => a.timeFromStart - b.timeFromStart);
   activePoint = null;
   renderProfile();
   updateSummary();
   exportButton.disabled = visibleSegments.length === 0;
+};
+
+const appendTelemetry = (newPoints, shouldFit = false) => {
+  if (!newPoints.length) return;
+
+  const newStart = newPoints[0]?.timestampValue;
+  if (Number.isFinite(newStart)) {
+    datasetStartTime =
+      datasetStartTime == null ? newStart : Math.min(datasetStartTime, newStart);
+  }
+
+  points.push(...newPoints);
+  const newSegments = buildFlightSegments(newPoints, flightSegments.length);
+  flightSegments.push(...newSegments);
+  loadedFileCount += 1;
+
+  renderFlightList();
+  updateActiveView(shouldFit);
+  statusEl.textContent = `Loaded ${points.length} points across ${flightSegments.length} flights.`;
+  resetButton.disabled = false;
+  exportButton.disabled = flightSegments.length === 0;
 };
 
 const getProfileSize = () => {
@@ -517,7 +607,13 @@ const buildProfileScales = (size) => {
   const desiredYTicks = clamp(Math.round(innerHeight / 40), 3, 8);
   const desiredXTicks = clamp(Math.round(innerWidth / 70), 6, 12);
   const modeKey = profileMode === "time" ? "timeFromStart" : "distFromStart";
-  const xMaxRaw = profileData[profileData.length - 1]?.[modeKey] ?? 0;
+  const xValues = profileData.map((point) => point[modeKey]).filter(Number.isFinite);
+  const xMaxRaw =
+    profileMode === "time" && Number.isFinite(profileTimeRange)
+      ? profileTimeRange
+      : xValues.length
+        ? Math.max(...xValues)
+        : 0;
   const xDomain = buildNiceTicksFromZero(xMaxRaw, desiredXTicks);
   let yDomain = buildNiceDomain(minAlt, maxAlt, desiredYTicks);
   if (!yDomain || !xDomain) return null;
@@ -791,22 +887,28 @@ const renderProfile = () => {
 };
 
 const findNearestProfilePoint = (xValue) => {
-  if (!profileData.length) return null;
+  const source =
+    profileMode === "time"
+      ? profileDataByTime
+      : profileDataByDistance.length
+        ? profileDataByDistance
+        : profileData;
+  if (!source.length) return null;
   const key = profileScales?.modeKey ?? (profileMode === "time" ? "timeFromStart" : "distFromStart");
 
   let lo = 0;
-  let hi = profileData.length - 1;
+  let hi = source.length - 1;
   while (hi - lo > 1) {
     const mid = Math.floor((lo + hi) / 2);
-    if (profileData[mid][key] < xValue) {
+    if (source[mid][key] < xValue) {
       lo = mid;
     } else {
       hi = mid;
     }
   }
 
-  const left = profileData[lo];
-  const right = profileData[hi];
+  const left = source[lo];
+  const right = source[hi];
   if (!left) return right;
   if (!right) return left;
   return Math.abs(left[key] - xValue) <= Math.abs(right[key] - xValue) ? left : right;
@@ -836,7 +938,11 @@ const resetState = () => {
   activePoints = [];
   flightSegments = [];
   profileSegments = [];
+  profileDataByTime = [];
+  profileDataByDistance = [];
   datasetStartTime = null;
+  loadedFileCount = 0;
+  profileTimeRange = null;
   statusEl.textContent = "No file loaded.";
   statsEl.textContent = "";
   flightListEl.innerHTML = "";
@@ -878,11 +984,15 @@ const createKml = (segments) => {
 
       const altitudeMode = hasAltitude ? "relativeToGround" : "clampToGround";
       const color = toKmlColor(segment.color);
-      const name = `Flight ${index + 1}`;
+      const name = segment.name || `Flight ${index + 1}`;
+      const begin = toKmlTime(segment.startTime);
+      const end = toKmlTime(segment.endTime);
+      const timeSpan = begin && end ? `\n      <TimeSpan>\n        <begin>${begin}</begin>\n        <end>${end}</end>\n      </TimeSpan>` : "";
 
       return `
     <Placemark>
       <name>${name}</name>
+      ${timeSpan}
       <Style>
         <LineStyle>
           <color>${color}</color>
@@ -959,9 +1069,11 @@ const formatTooltip = (point) => {
 
 const renderTrack = () => {
   if (!points.length) return;
-  flightSegments = buildFlightSegments(points);
+  flightSegments = buildFlightSegments(points, 0);
   renderFlightList();
   updateActiveView(true);
+  statusEl.textContent = `Loaded ${points.length} points across ${flightSegments.length} flights.`;
+  resetButton.disabled = false;
 };
 
 const parseTelemetry = (rows) => {
@@ -1012,36 +1124,43 @@ const parseTelemetry = (rows) => {
   return parsed;
 };
 
+const parseFile = (file) =>
+  new Promise((resolve, reject) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      dynamicTyping: true,
+      complete: (results) => resolve(parseTelemetry(results.data)),
+      error: () => reject(new Error("Unable to parse file.")),
+    });
+  });
+
 fileInput.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+  const files = Array.from(event.target.files || []);
+  if (!files.length) return;
 
-  statusEl.textContent = "Parsing telemetry...";
-  statsEl.textContent = "";
+  statusEl.textContent = `Parsing ${files.length} file${files.length === 1 ? "" : "s"}...`;
   exportButton.disabled = true;
-  resetButton.disabled = true;
 
-  Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    dynamicTyping: true,
-    complete: (results) => {
-      points = parseTelemetry(results.data);
+  Promise.allSettled(files.map((file) => parseFile(file))).then((results) => {
+    const parsedFiles = results
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => result.value);
 
-      if (!points.length) {
-        statusEl.textContent = "No valid telemetry points found.";
-        return;
-      }
+    let addedAny = false;
+    parsedFiles.forEach((parsed, index) => {
+      if (!parsed.length) return;
+      appendTelemetry(parsed, !addedAny);
+      addedAny = true;
+    });
 
-      datasetStartTime = points[0]?.timestampValue ?? null;
-      statusEl.textContent = `Loaded ${points.length} points.`;
-      exportButton.disabled = false;
-      resetButton.disabled = false;
-      renderTrack();
-    },
-    error: () => {
-      statusEl.textContent = "Unable to parse file.";
-    },
+    if (!addedAny) {
+      statusEl.textContent = "No valid telemetry points found.";
+      exportButton.disabled = flightSegments.length === 0;
+      return;
+    }
+
+    updateActiveView(true);
   });
 });
 
