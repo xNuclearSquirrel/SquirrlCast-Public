@@ -20,6 +20,7 @@ const columnKeys = {
   lonDeg: "flight.osd.lon_deg",
   latRad: "flight.osd.lat_rad",
   lonRad: "flight.osd.lon_rad",
+  gpsUsed: "flight.osd.gps_used",
   alt: "flight.osd.rel_h_m",
   altHome: "flight.home.alt_m",
   batterySoc: "battery.dynamic.soc",
@@ -28,6 +29,7 @@ const columnKeys = {
   homeLonDeg: "flight.home.lon_deg",
   homeLatRad: "flight.home.lat_rad",
   homeLonRad: "flight.home.lon_rad",
+  homepointSet: "flight.home.homepoint_set",
   timestamp: "timestamp",
 };
 
@@ -162,7 +164,7 @@ const formatTooltip = (point) => {
   lines.push(`Battery: ${formatSoc(point.batterySoc)}`);
   lines.push(`Voltage: ${formatVoltage(point.batteryMv)}`);
 
-  if (point.homeLat != null && point.homeLon != null) {
+  if (point.homepointSet && point.homeLat != null && point.homeLon != null) {
     const distance = haversineMeters(point.lat, point.lon, point.homeLat, point.homeLon);
     const bearing = bearingDegrees(point.lat, point.lon, point.homeLat, point.homeLon);
     lines.push(`Home: ${distance.toFixed(1)} m @ ${bearing.toFixed(0)}°`);
@@ -193,6 +195,9 @@ const renderTrack = () => {
 const parseTelemetry = (rows) => {
   const parsed = rows
     .map((row) => {
+      const gpsUsed = row[columnKeys.gpsUsed];
+      if (gpsUsed !== true && gpsUsed !== 1) return null;
+
       const lat = Number.isFinite(row[columnKeys.latDeg])
         ? row[columnKeys.latDeg]
         : toDegrees(row[columnKeys.latRad]);
@@ -205,6 +210,7 @@ const parseTelemetry = (rows) => {
         ? row[columnKeys.alt]
         : row[columnKeys.altHome];
 
+      const homepointSet = row[columnKeys.homepointSet] === true || row[columnKeys.homepointSet] === 1;
       const homeLat = Number.isFinite(row[columnKeys.homeLatDeg])
         ? row[columnKeys.homeLatDeg]
         : toDegrees(row[columnKeys.homeLatRad]);
@@ -218,8 +224,9 @@ const parseTelemetry = (rows) => {
         alt: Number.isFinite(alt) ? alt : null,
         batterySoc: row[columnKeys.batterySoc],
         batteryMv: row[columnKeys.batteryMv],
-        homeLat: Number.isFinite(homeLat) ? homeLat : null,
-        homeLon: Number.isFinite(homeLon) ? homeLon : null,
+        homeLat: homepointSet && Number.isFinite(homeLat) ? homeLat : null,
+        homeLon: homepointSet && Number.isFinite(homeLon) ? homeLon : null,
+        homepointSet,
         timestamp: row[columnKeys.timestamp],
         timestampValue: row[columnKeys.timestamp] ? Date.parse(row[columnKeys.timestamp]) : null,
       };
@@ -281,8 +288,16 @@ map.on("mousemove", (event) => {
 
   tooltip.hidden = false;
   tooltip.innerHTML = formatTooltip(nearest);
-  tooltip.style.left = `${event.containerPoint.x}px`;
-  tooltip.style.top = `${event.containerPoint.y}px`;
+  const padding = 12;
+  const container = map.getContainer().getBoundingClientRect();
+  const tooltipWidth = tooltip.offsetWidth;
+  const tooltipHeight = tooltip.offsetHeight;
+  const maxX = Math.max(padding, container.width - tooltipWidth - padding);
+  const maxY = Math.max(padding, container.height - tooltipHeight - padding);
+  const x = Math.min(Math.max(event.containerPoint.x + padding, padding), maxX);
+  const y = Math.min(Math.max(event.containerPoint.y + padding, padding), maxY);
+  tooltip.style.left = `${x}px`;
+  tooltip.style.top = `${y}px`;
 
   if (hoverMarker) {
     hoverMarker.setLatLng([nearest.lat, nearest.lon]);

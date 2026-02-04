@@ -41,6 +41,8 @@ main {
   grid-template-columns: minmax(260px, 320px) 1fr;
   gap: 24px;
   padding: 24px clamp(16px, 5vw, 48px) 48px;
+  min-height: calc(100vh - 220px);
+  align-items: stretch;
 }
 
 .controls {
@@ -51,6 +53,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: clamp(420px, 70vh, 760px);
 }
 
 .file-input {
@@ -113,12 +116,12 @@ button[disabled] {
   border-radius: 16px;
   border: 1px solid var(--border);
   overflow: hidden;
-  min-height: 520px;
+  min-height: clamp(420px, 70vh, 760px);
 }
 
 #map {
   height: 100%;
-  min-height: 520px;
+  min-height: 0;
 }
 
 .tooltip {
@@ -132,7 +135,6 @@ button[disabled] {
   font-size: 0.85rem;
   line-height: 1.4;
   max-width: 240px;
-  transform: translate(12px, 12px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
@@ -149,6 +151,10 @@ button[disabled] {
 
   .map-wrapper,
   #map {
-    min-height: 420px;
+    min-height: clamp(360px, 60vh, 600px);
+  }
+
+  .controls {
+    min-height: clamp(360px, 60vh, 600px);
   }
 }
