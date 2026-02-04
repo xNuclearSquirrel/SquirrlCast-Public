@@ -16,7 +16,7 @@ SquirrelCast is an Android smartphone-based video-out solution for newer DJI gog
 
 ## Get the App
 
-- **Google Play:** https://play.google.com/store/apps/details?id=com.NuclearSquirrel.SquirrelCast
+- **Google Play:** [https://play.google.com/store/apps/details?id=com.NuclearSquirrel.SquirrelCast](https://play.google.com/store/apps/details?id=com.NuclearSquirrel.SquirrelCast)
 
 >Note: The app is still in closed testing, but is expected to be released within a few days!
 
