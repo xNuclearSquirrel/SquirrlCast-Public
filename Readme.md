@@ -45,7 +45,7 @@ SquirrelCast is an Android smartphone-based video-out solution for newer DJI gog
 
 ## Support
 
-For questions join our discord [Squirrelcast](https://discord.gg/qUqNaEJNP)!
+For questions join our discord [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/qUqNaEJNP)
 
 ## Credits
 
