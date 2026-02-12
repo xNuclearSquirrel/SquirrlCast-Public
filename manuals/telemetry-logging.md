@@ -10,3 +10,8 @@ This is mostly interesting for DJI drones (for example Avata), which can send lo
 </p>
 
 > **Note:** In the future, the goal is to connect ELRS telemetry to the app and add more features around tracking and telemetry logging.
+
+
+To view and export the flight path, you can use this tool:
+[Telemetry Parsing Tool](https://xnuclearsquirrel.github.io/SquirrelCast-Public/tools/telemetry-parsing/)
+> **Note:** Only DJI drones have a flight path in their telemetry. It will not work with the air units.
