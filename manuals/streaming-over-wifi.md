@@ -6,7 +6,7 @@ SquirrelCast offers two main streaming paths:
 - **Stream to a browser** directly via **WebRTC**
 - **Stream to third-party apps** via **RTSP**
 
-There is also a third option for newer goggles:
+There is also a third option for Goggles 3:
 - **Stream directly from the goggles to Windows** using the goggles’ built-in Wi-Fi sharing  
   This only requires SquirrelCast for the initial setup, then it works without the app.
 
