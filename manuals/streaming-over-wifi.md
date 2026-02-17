@@ -7,8 +7,10 @@ SquirrelCast offers two main streaming paths:
 - **Stream to third-party apps** via **RTSP**
 
 There is also a third option for Goggles 3:
-- **Stream directly from the goggles to Windows** using the goggles’ built-in Wi-Fi sharing  
+- **Stream directly from the goggles to Windows** using the goggles’ built-in Wi-Fi sharing and [SquirrelReceiver](https://xnuclearsquirrel.github.io/SquirrelReceiver/).
   This only requires SquirrelCast for the initial setup, then it works without the app.
+
+> **Note:** SquirrelReceiver is Windows only for now. Support for macOS and Linux will be added later.
 
 ## Stream to a browser (WebRTC)
 
@@ -90,7 +92,7 @@ https://github.com/xNuclearSquirrel/SquirrelReceiver
 
 ### Install and unlock SquirrelReceiver
 
-1. Install SquirrelReceiver on Windows and open **Settings**.
+1. Install [SquirrelReceiver](https://xnuclearsquirrel.github.io/SquirrelReceiver/) on Windows and open **Settings**.
 2. In SquirrelCast, open the **Utilities** tab.
 3. Select the **Unlock** button and scan the QR code shown in SquirrelReceiver to generate a license key and unlock SquirrelReceiver.
 
