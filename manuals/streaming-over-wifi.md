@@ -86,7 +86,7 @@ If you want a clean video feed (without MSP OSD), turn off overlays in the goggl
 **SquirrelReceiver** is an additional Windows tool that receives video directly from the goggles using the built-in wireless sharing feature, without SquirrelCast running. It is **not** an alternative RTSP receiver at the moment.
 
 SquirrelReceiver can be downloaded from its GitHub releases page:  
-https://github.com/xNuclearSquirrel/SquirrelReceiver
+[https://github.com/xNuclearSquirrel/SquirrelReceiver](https://xnuclearsquirrel.github.io/SquirrelReceiver/)
 
 > **Note:** Currently only works with DJI Goggles 3.
 
