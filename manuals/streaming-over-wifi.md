@@ -7,7 +7,7 @@ SquirrelCast offers two main streaming paths:
 - **Stream to third-party apps** via **RTSP**
 
 There is also a third option for Goggles 3:
-- **Stream directly from the goggles to Windows** using the goggles’ built-in Wi-Fi sharing and [SquirrelReceiver](https://xnuclearsquirrel.github.io/SquirrelReceiver/).
+- **Stream directly from the goggles to Windows** using the goggles’ built-in Wi-Fi sharing and [SquirrelReceiver](https://github.com/xNuclearSquirrel/SquirrelReceiver).
   This only requires SquirrelCast for the initial setup, then it works without the app.
 
 > **Note:** SquirrelReceiver is Windows only for now. Support for macOS and Linux will be added later.
@@ -86,13 +86,13 @@ If you want a clean video feed (without MSP OSD), turn off overlays in the goggl
 **SquirrelReceiver** is an additional Windows tool that receives video directly from the goggles using the built-in wireless sharing feature, without SquirrelCast running. It is **not** an alternative RTSP receiver at the moment.
 
 SquirrelReceiver can be downloaded from its GitHub releases page:  
-[https://github.com/xNuclearSquirrel/SquirrelReceiver](https://xnuclearsquirrel.github.io/SquirrelReceiver/)
+[https://github.com/xNuclearSquirrel/SquirrelReceiver](https://github.com/xNuclearSquirrel/SquirrelReceiver)
 
 > **Note:** Currently only works with DJI Goggles 3.
 
 ### Install and unlock SquirrelReceiver
 
-1. Install [SquirrelReceiver](https://xnuclearsquirrel.github.io/SquirrelReceiver/) on Windows and open **Settings**.
+1. Install [SquirrelReceiver](https://github.com/xNuclearSquirrel/SquirrelReceiver) on Windows and open **Settings**.
 2. In SquirrelCast, open the **Utilities** tab.
 3. Select the **Unlock** button and scan the QR code shown in SquirrelReceiver to generate a license key and unlock SquirrelReceiver.
 
