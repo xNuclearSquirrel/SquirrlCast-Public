@@ -2,6 +2,8 @@
 
 SquirrelCast is an Android smartphone-based video-out solution for newer DJI goggles (anything compatible with **O3** and **O4**).
 
+<img src="overview.jpg" alt="Banner image" width="600">
+
 ## What SquirrelCast Does
 
 - Connect your phone to the goggles via a **USB-C cable**
